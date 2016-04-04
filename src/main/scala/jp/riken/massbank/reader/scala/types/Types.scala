@@ -1,4 +1,4 @@
-package jp.riken.massbank.parser.scala.types
+package jp.riken.massbank.reader.scala.types
 
 sealed trait Required
 trait Mandatory extends Required

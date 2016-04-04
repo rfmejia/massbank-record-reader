@@ -1,7 +1,7 @@
-package jp.riken.massbank.parser.scala
+package jp.riken.massbank.reader.scala
 
-import jp.riken.massbank.parser.scala.groups._
-import jp.riken.massbank.parser.scala.types._
+import jp.riken.massbank.reader.scala.groups._
+import jp.riken.massbank.reader.scala.types._
 
 trait GroupParser[G <: MassBankGroup] extends LiteralParsers {
   def structure: Parser[_]
@@ -34,7 +34,7 @@ object ChemicalGroupParser extends GroupParser[ChemicalGroup] {
       doubleField("CH$EXACT_MASS").? ~
       stringField("CH$SMILES").? ~
       stringField("CH$IUPAC").? ~
-      linkField("CH$LINK").*
+      dbLinkField("CH$LINK").*
 
   def parse = structure ^^ {
     case name ~ compoundClass ~ formula ~ exactMass ~ smiles ~ iupac ~ links =>
@@ -46,7 +46,7 @@ object SampleGroupParser extends GroupParser[SampleGroup] {
   def structure =
     stringField("SP$SCIENTIFIC_NAME").? ~
       stringField("SP$LINEAGE").? ~
-      linkField("SP$LINK").* ~
+      dbLinkField("SP$LINK").* ~
       stringField("SP$SAMPLE").?
 
   def parse = structure ^^ {

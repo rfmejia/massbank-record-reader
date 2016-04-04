@@ -1,4 +1,4 @@
-package jp.riken.massbank.parser.scala
+package jp.riken.massbank.reader.scala
 
 package object types {
   type Tagged[U] = { type Tag = U }

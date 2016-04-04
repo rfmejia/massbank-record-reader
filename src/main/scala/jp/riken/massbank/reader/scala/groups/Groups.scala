@@ -1,7 +1,7 @@
-package jp.riken.massbank.parser.scala.groups
+package jp.riken.massbank.reader.scala.groups
 
 import java.time.LocalDate
-import jp.riken.massbank.parser.scala.types._
+import jp.riken.massbank.reader.scala.types._
 
 sealed trait MassBankGroup
 
