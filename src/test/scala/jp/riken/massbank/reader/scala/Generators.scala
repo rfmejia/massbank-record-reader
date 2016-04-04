@@ -1,7 +1,6 @@
 package jp.riken.massbank.reader.scala
 
 import org.scalacheck.{ Gen, Shrink }
-import java.time.LocalDate
 
 object Generators {
 
@@ -18,7 +17,7 @@ object Generators {
   val validDouble = Gen.chooseNum(Double.MinValue, Double.MaxValue)
 
   val validDate = for {
-    year <- Gen.chooseNum(1970, 3000)
+    year <- Gen.chooseNum(1900, 9999)
     month <- Gen.chooseNum(1, 12)
     day <- {
       if (month == 2) Gen.chooseNum(1, 28)
@@ -31,4 +30,15 @@ object Generators {
     db <- Gen.oneOf("CAS", "INCHIKEY", "KEGG", "PUBCHEM", "NCBI-TAXONOMY")
     link <- validInt
   } yield s"$db $link"
+
+  val completePeak = for {
+    mz <- validInt
+    int <- validDouble
+    relInt <- validDouble
+  } yield s"\t$mz $int $relInt"
+
+  val partialPeak = for {
+    mz <- validInt
+    int <- validDouble
+  } yield s"\t$mz $int"
 }
