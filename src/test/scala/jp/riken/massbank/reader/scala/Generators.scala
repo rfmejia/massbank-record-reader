@@ -35,10 +35,10 @@ object Generators {
     mz <- validInt
     int <- validDouble
     relInt <- validDouble
-  } yield s"\t$mz $int $relInt"
+  } yield "1 2 3" //s"$mz $int $relInt"
 
   val partialPeak = for {
     mz <- validInt
     int <- validDouble
-  } yield s"\t$mz $int"
+  } yield "1 2" // s"$mz $int"
 }
