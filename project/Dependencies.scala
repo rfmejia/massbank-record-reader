@@ -6,5 +6,6 @@ object MainDependencies {
 
 object TestDependencies {
   val scalatest  = "org.scalatest"  %% "scalatest"  % "2.2.6"  % "test"
+  val scalacheck = "org.scalacheck" %% "scalacheck" % "1.12.5" % "test"
 }
 

@@ -4,7 +4,7 @@ import sbt.Keys._
 object ProjectBuild extends Build {
 
   override def settings = super.settings ++ Seq(
-    name := "massbank-record-parser",
+    name := "massbank-record-reader",
     organization := "jp.riken",
     version := "2.10-1-SNAPSHOT",
     scalaVersion in ThisBuild := "2.11.8",
@@ -21,12 +21,13 @@ object ProjectBuild extends Build {
   import TestDependencies._
   import ScalariformSettings._
 
-  lazy val root = Project(id = "mnn", base = file("."))
+  lazy val root = Project(id = "massbank-record-reader", base = file("."))
     .settings(
       customScalariformSettings,
       libraryDependencies ++= Seq(
         parserCombinators,
-        scalatest
+        scalatest,
+        scalacheck
       )
     )
 }
