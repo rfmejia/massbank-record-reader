@@ -3,7 +3,7 @@ package jp.riken.massbank.reader.scala
 import jp.riken.massbank.reader.scala.groups._
 import jp.riken.massbank.reader.scala.types._
 
-trait GroupParser[G <: MassBankGroup] extends LiteralParsers {
+trait GroupParser[G <: MassBankGroup] extends FieldParsers {
   def structure: Parser[_]
 
   def parse: Parser[G]
