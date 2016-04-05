@@ -30,13 +30,13 @@ object Generators {
   } yield s"$db $link"
 
   val completePeak = for {
-    mz <- validDouble
-    int <- validDouble
-    relInt <- validDouble
+    mz <- Gen.posNum[Double]
+    int <- Gen.posNum[Double]
+    relInt <- Gen.posNum[Double]
   } yield s"$mz $int $relInt"
 
   val partialPeak = for {
-    mz <- validDouble
-    int <- validDouble
+    mz <- Gen.posNum[Double]
+    int <- Gen.posNum[Double]
   } yield s"$mz $int"
 }
