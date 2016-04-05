@@ -22,9 +22,9 @@ trait LiteralParsers extends JavaTokenParsers {
     }
 
   def peak(format: String): Parser[Peak] = format.split(" ").toList match {
-    case "m/z" :: "int." :: "rel.int." :: Nil => integer ~ double ~ double ^^ { case a ~ b ~ c => CompletePeakTriple(a, b, c) }
-    case "m/z" :: "int." :: Nil               => integer ~ double ^^ { case a ~ b => AbsolutePeakPair(a, b) }
-    case "m/z" :: "rel.int." :: Nil           => integer ~ double ^^ { case a ~ b => RelativePeakPair(a, b) }
+    case "m/z" :: "int." :: "rel.int." :: Nil => double ~ double ~ double ^^ { case a ~ b ~ c => CompletePeakTriple(a, b, c) }
+    case "m/z" :: "int." :: Nil               => double ~ double ^^ { case a ~ b => AbsolutePeakPair(a, b) }
+    case "m/z" :: "rel.int." :: Nil           => double ~ double ^^ { case a ~ b => RelativePeakPair(a, b) }
     case _                                    => failure(s"Invalid peak data format '$format'")
   }
 }

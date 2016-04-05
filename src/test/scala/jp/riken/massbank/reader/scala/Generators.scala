@@ -4,8 +4,6 @@ import org.scalacheck.{ Gen, Shrink }
 
 object Generators {
 
-  def noShrink[T] = Shrink[T](_ => Stream.empty)
-
   val length = 50
 
   def chars: Gen[Char] = Gen.oneOf(Gen.alphaNumChar, Gen.oneOf[Char](" -!\"#$%&'()-^\\@[;:,./=~|`{+*<>?_"))
@@ -32,13 +30,13 @@ object Generators {
   } yield s"$db $link"
 
   val completePeak = for {
-    mz <- validInt
+    mz <- validDouble
     int <- validDouble
     relInt <- validDouble
-  } yield "1 2 3" //s"$mz $int $relInt"
+  } yield s"$mz $int $relInt"
 
   val partialPeak = for {
-    mz <- validInt
+    mz <- validDouble
     int <- validDouble
-  } yield "1 2" // s"$mz $int"
+  } yield s"$mz $int"
 }
