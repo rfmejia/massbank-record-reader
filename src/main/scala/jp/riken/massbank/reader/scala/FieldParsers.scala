@@ -18,9 +18,11 @@ trait FieldParsers extends LiteralParsers {
 
   def dbLinkField: String => Parser[DatabaseLink] = field(dbLink) _
 
-  def peakField(tag: String): Parser[PeakData] = {
-    val peakParser: Parser[Peak] = tag ~> ":" ~> anyString flatMap { case fmt => peak(fmt) }
-    peakParser.* ^^ { case peaks => PeakData(peaks) }
+  def peakField(tag: String): Parser[PeakData] = tag ~> ":" ~> anyString ~ anyString.* ^^ {
+    case format ~ lines =>
+      val peakParser = peak(format)
+      val peaks: List[Peak] = lines.map(l => parse(peakParser, l)).filter(_.successful).map(_.get)
+      PeakData(peaks)
   }
 }
 
