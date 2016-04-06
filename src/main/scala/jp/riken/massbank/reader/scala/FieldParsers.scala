@@ -16,7 +16,7 @@ trait FieldParsers extends LiteralParsers {
 
   def dateField: String => Parser[LocalDate] = field(date) _
 
-  def dbLinkField: String => Parser[DatabaseLink] = field(dbLink) _
+  def subtagField: String => Parser[(String, String)] = field(subtag) _
 
   def peakField(tag: String): Parser[PeakData] = tag ~> ":" ~> anyString ~ anyString.* ^^ {
     case format ~ lines =>

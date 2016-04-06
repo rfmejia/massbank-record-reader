@@ -12,14 +12,11 @@ trait LiteralParsers extends JavaTokenParsers {
 
   def double: Parser[Double] = floatingPointNumber ^^ (_.toDouble)
 
-  def date: Parser[LocalDate] = ("[\\d]{4,}").r ~ "." ~ "[\\d]{1,2}".r ~ "." ~ "[\\d]{1,2}".r ^^ {
+  def date: Parser[LocalDate] = "[\\d]{4,}".r ~ "." ~ "[\\d]{1,2}".r ~ "." ~ "[\\d]{1,2}".r ^^ {
     case year ~ "." ~ month ~ "." ~ day => LocalDate.of(year.toInt, month.toInt, day.toInt)
   }
 
-  def dbLink: Parser[DatabaseLink] =
-    """[\w][\w\d_-]*""".r ~ anyString ^^ {
-      case db ~ link => (db, link).asInstanceOf[DatabaseLink]
-    }
+  def subtag: Parser[(String, String)] = """[\w][\w\d_-]*""".r ~ anyString ^^ { case subtag ~ value => (subtag, value) }
 
   def peak(format: String): Parser[Peak] = format.split(" ").toList match {
     case "m/z" :: "int." :: "rel.int." :: Nil => double ~ double ~ double ^^ { case a ~ b ~ c => CompletePeakTriple(a, b, c) }

@@ -63,9 +63,9 @@ class LiteralParsersTest extends WordSpec with GeneratorDrivenPropertyChecks wit
     }
   }
 
-  "`dbLink` literal parser" should {
-    "parse valid database link pairs" in {
-      forAll(Generators.validLink) { s => parse(dbLink, s) shouldBe a[Success[_]] }
+  "`subtag` literal parser" should {
+    "parse valid string pairs" in {
+      forAll(Generators.validTag) { s => parse(subtag, s) shouldBe a[Success[_]] }
     }
   }
 

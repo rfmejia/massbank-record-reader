@@ -6,7 +6,7 @@ object Generators {
 
   val length = 50
 
-  def chars: Gen[Char] = Gen.oneOf(Gen.alphaNumChar, Gen.oneOf[Char](" -!\"#$%&'()-^\\@[;:,./=~|`{+*<>?_"))
+  def chars: Gen[Char] = Gen.oneOf(Gen.alphaNumChar, Gen.oneOf(" -!\"#$%&'()-^\\@[;:,./=~|`{+*<>?_"))
 
   val validString = for (cs <- Gen.listOfN(length, chars)) yield cs.mkString
 
@@ -24,10 +24,11 @@ object Generators {
     }
   } yield s"$year.$month.$day"
 
-  val validLink = for {
-    db <- Gen.oneOf("CAS", "INCHIKEY", "KEGG", "PUBCHEM", "NCBI-TAXONOMY")
-    link <- validInt
-  } yield s"$db $link"
+  val validTag = for {
+    start <- Gen.alphaChar
+    subtag <- Gen.listOfN(length, Gen.oneOf(Gen.alphaNumChar, Gen.oneOf("-_")))
+    value <- validString
+  } yield start + subtag.mkString + " " + value
 
   val completePeak = for {
     mz <- Gen.posNum[Double]

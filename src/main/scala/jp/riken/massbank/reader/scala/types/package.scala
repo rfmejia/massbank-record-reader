@@ -6,10 +6,8 @@ package object types {
 
   protected object definitions {
     trait Accession
-    trait DatabaseLink
   }
 
   type Accession = String @@ definitions.Accession
-  type DatabaseLink = (String, String) @@ definitions.DatabaseLink
 }
 
