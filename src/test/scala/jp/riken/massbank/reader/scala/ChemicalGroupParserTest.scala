@@ -22,7 +22,7 @@ class ChemicalGroupParserTest extends WordSpec with Matchers with ChemicalGroupP
         ),
         Some("Amino acids"),
         Some("C10H13NO2"),
-        Some(179.09463),
+        Some("179.09463"),
         Some("OC(=O)CC(N)Cc(c1)cccc1"),
         Some("InChI=1S/C10H13NO2/c11-9(7-10(12)13)6-8-4-2-1-3-5-8/h1-5,9H,6-7,11H2,(H,12,13)/t9-/m1/s1"),
         Map("CAS" -> "145149-50-4")
@@ -58,7 +58,6 @@ class ChemicalGroupParserTest extends WordSpec with Matchers with ChemicalGroupP
       )
 
       val result = parse(chemicalGroup, input)
-      println(result)
       result shouldBe a[Success[_]]
       result.get shouldBe expected
     }

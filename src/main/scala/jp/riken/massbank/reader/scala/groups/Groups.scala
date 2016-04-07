@@ -20,7 +20,7 @@ case class ChemicalGroup(
   name: List[String],
   compoundClass: Option[String],
   formula: Option[String],
-  exact_mass: Option[Double],
+  exact_mass: Option[String],
   smiles: Option[String],
   iupac: Option[String],
   link: Map[String, String]
@@ -41,7 +41,6 @@ case class AnalyticalChemistryGroup(
 ) extends MassBankGroup {
   lazy val ionMode: Option[String] = massSpectrometry.get("ION_MODE")
   lazy val msType: Option[String] = massSpectrometry.get("MS_TYPE")
-
 }
 
 case class MassSpectralDataGroup(

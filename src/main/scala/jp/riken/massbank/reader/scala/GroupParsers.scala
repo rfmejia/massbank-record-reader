@@ -24,7 +24,7 @@ trait ChemicalGroupParser extends FieldParsers {
     stringField("CH$NAME").* ~
       stringField("CH$COMPOUND_CLASS").? ~
       stringField("CH$FORMULA").? ~
-      doubleField("CH$EXACT_MASS").? ~
+      stringField("CH$EXACT_MASS").? ~
       stringField("CH$SMILES").? ~
       stringField("CH$IUPAC").? ~
       subtagField("CH$LINK").* ^^ {
