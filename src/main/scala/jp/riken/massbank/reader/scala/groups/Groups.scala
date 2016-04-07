@@ -2,7 +2,6 @@ package jp.riken.massbank.reader.scala.groups
 
 import jp.riken.massbank.reader.scala.types._
 
-// TODO: Make sure parser for solvent field is iterative
 sealed trait MassBankGroup
 
 case class RecordSpecificGroup(
@@ -20,7 +19,7 @@ case class ChemicalGroup(
   name: List[String],
   compoundClass: Option[String],
   formula: Option[String],
-  exact_mass: Option[String],
+  exactMass: Option[String],
   smiles: Option[String],
   iupac: Option[String],
   link: Map[String, String]
