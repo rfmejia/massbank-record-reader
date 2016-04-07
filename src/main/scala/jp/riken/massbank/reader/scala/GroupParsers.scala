@@ -3,91 +3,73 @@ package jp.riken.massbank.reader.scala
 import jp.riken.massbank.reader.scala.groups._
 import jp.riken.massbank.reader.scala.types._
 
-trait GroupParser[G <: MassBankGroup] extends FieldParsers {
-  def structure: Parser[_]
-
-  def parse: Parser[G]
-}
-
-object RecordSpecificGroupParser extends GroupParser[RecordSpecificGroup] {
-  def structure =
-    stringField("ACCESSION") ~
+trait RecordSpecificGroupParser extends FieldParsers {
+  def recordSpecificGroup =
+    stringField("ACCESSION").? ~
       stringField("RECORD_TITLE").? ~
-      dateField("DATE").? ~
+      stringField("DATE").? ~
       stringField("AUTHORS").? ~
       stringField("LICENSE").? ~
       stringField("COPYRIGHT").? ~
       stringField("PUBLICATION").? ~
-      stringField("COMMENT").?
-
-  def parse = structure ^^ {
-    case accession ~ recordTitle ~ date ~ authors ~ license ~ copyright ~ publication ~ comment =>
-      RecordSpecificGroup(accession.asInstanceOf[Accession], recordTitle, date, authors, license, copyright, publication, comment)
-  }
+      stringField("COMMENT").* ^^ {
+        case accession ~ recordTitle ~ date ~ authors ~ license ~ copyright ~ publication ~ comment =>
+          RecordSpecificGroup(accession.map(_.asInstanceOf[Accession]), recordTitle, date, authors, license, copyright, publication, comment)
+      }
 }
 
-object ChemicalGroupParser extends GroupParser[ChemicalGroup] {
-  def structure =
-    stringField("CH$NAME").? ~
+object RecordSpecificGroupParser extends RecordSpecificGroupParser
+
+trait ChemicalGroupParser extends FieldParsers {
+  def chemicalGroup =
+    stringField("CH$NAME").* ~
       stringField("CH$COMPOUND_CLASS").? ~
       stringField("CH$FORMULA").? ~
       doubleField("CH$EXACT_MASS").? ~
       stringField("CH$SMILES").? ~
       stringField("CH$IUPAC").? ~
-      dbLinkField("CH$LINK").*
-
-  def parse = structure ^^ {
-    case name ~ compoundClass ~ formula ~ exactMass ~ smiles ~ iupac ~ links =>
-      ChemicalGroup(name, compoundClass, formula, exactMass, smiles, iupac, links)
-  }
+      subtagField("CH$LINK").* ^^ {
+        case name ~ compoundClass ~ formula ~ exactMass ~ smiles ~ iupac ~ links =>
+          ChemicalGroup(name, compoundClass, formula, exactMass, smiles, iupac, links.toMap)
+      }
 }
 
-object SampleGroupParser extends GroupParser[SampleGroup] {
-  def structure =
+trait SampleGroupParser extends FieldParsers {
+  def sampleGroup =
     stringField("SP$SCIENTIFIC_NAME").? ~
       stringField("SP$LINEAGE").? ~
-      dbLinkField("SP$LINK").* ~
-      stringField("SP$SAMPLE").?
-
-  def parse = structure ^^ {
-    case scientificName ~ lineage ~ links ~ sample =>
-      SampleGroup(scientificName, lineage, links, sample)
-  }
+      subtagField("SP$LINK").* ~
+      stringField("SP$SAMPLE").? ^^ {
+        case scientificName ~ lineage ~ links ~ sample =>
+          SampleGroup(scientificName, lineage, links.toMap, sample)
+      }
 }
 
-object AnalyticalChemistryGroupParser extends GroupParser[AnalyticalChemistryGroup] {
-  def structure =
+trait AnalyticalChemistryGroupParsers extends FieldParsers {
+  def analyticalChemistryGroup =
     stringField("AC$INSTRUMENT").? ~
       stringField("AC$INSTRUMENT_TYPE").? ~
-      stringField("AC$MASS_SPECTROMETRY: MS_TYPE").? ~
-      stringField("AC$MASS_SPECTROMETRY: ION_MODE").? ~
-      stringField("AC$MASS_SPECTROMETRY").? ~
-      stringField("AC$CHROMATOGRAPHY").?
-
-  def parse = structure ^^ {
-    case instrument ~ instrumentType ~ msType ~ ionMode ~ massSpectrometry ~ chromatography =>
-      AnalyticalChemistryGroup(instrument, instrumentType, msType, ionMode, massSpectrometry, chromatography)
-  }
+      subtagField("AC$MASS_SPECTROMETRY").* ~
+      subtagField("AC$CHROMATOGRAPHY").* ^^ {
+        case instrument ~ instrumentType ~ massSpectrometry ~ chromatography =>
+          AnalyticalChemistryGroup(instrument, instrumentType, massSpectrometry.toMap, chromatography.toMap)
+      }
 }
 
-object MassSpectralDataGroupParser extends GroupParser[MassSpectralDataGroup] {
-  def structure =
-    stringField("MS$FOCUSED_ION").? ~
-      stringField("MS$DATA_PROCESSING").?
-
-  def parse = structure ^^ {
-    case focusedIon ~ dataProcessing => MassSpectralDataGroup(focusedIon, dataProcessing)
-  }
+trait MassSpectralDataGroupParsers extends FieldParsers {
+  def massSpectralDataGroup =
+    subtagField("MS$FOCUSED_ION").* ~
+      subtagField("MS$DATA_PROCESSING").* ^^ {
+        case focusedIon ~ dataProcessing => MassSpectralDataGroup(focusedIon.toMap, dataProcessing.toMap)
+      }
 }
 
-object MassSpectralPeakDataGroupParser extends GroupParser[MassSpectralPeakDataGroup] {
-  def structure =
+trait MassSpectralPeakDataGroupParsers extends FieldParsers {
+  def massSpectralPeakDataGroup =
     stringField("PK$SPLASH").? ~
       stringField("PK$ANNOTATION").? ~
       intField("PK$NUM_PEAK") ~
-      peakField("PK$PEAK")
-
-  def parse = structure ^^ {
-    case splash ~ annotation ~ numPeak ~ peaks => MassSpectralPeakDataGroup(splash, annotation, numPeak, peaks)
-  }
+      peakField("PK$PEAK") ^^ {
+        case splash ~ annotation ~ numPeak ~ peaks => MassSpectralPeakDataGroup(splash, annotation, numPeak, peaks)
+      }
 }
