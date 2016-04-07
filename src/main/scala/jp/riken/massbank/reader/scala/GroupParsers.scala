@@ -17,7 +17,6 @@ trait RecordSpecificGroupParser extends FieldParsers {
           RecordSpecificGroup(accession.map(_.asInstanceOf[Accession]), recordTitle, date, authors, license, copyright, publication, comment)
       }
 }
-
 object RecordSpecificGroupParser extends RecordSpecificGroupParser
 
 trait ChemicalGroupParser extends FieldParsers {
@@ -33,6 +32,7 @@ trait ChemicalGroupParser extends FieldParsers {
           ChemicalGroup(name, compoundClass, formula, exactMass, smiles, iupac, links.toMap)
       }
 }
+object ChemicalGroupParser extends ChemicalGroupParser
 
 trait SampleGroupParser extends FieldParsers {
   def sampleGroup =
@@ -44,8 +44,9 @@ trait SampleGroupParser extends FieldParsers {
           SampleGroup(scientificName, lineage, links.toMap, sample)
       }
 }
+object SampleGroupParser extends ChemicalGroupParser
 
-trait AnalyticalChemistryGroupParsers extends FieldParsers {
+trait AnalyticalChemistryGroupParser extends FieldParsers {
   def analyticalChemistryGroup =
     stringField("AC$INSTRUMENT").? ~
       stringField("AC$INSTRUMENT_TYPE").? ~
@@ -55,16 +56,18 @@ trait AnalyticalChemistryGroupParsers extends FieldParsers {
           AnalyticalChemistryGroup(instrument, instrumentType, massSpectrometry.toMap, chromatography.toMap)
       }
 }
+object AnalyticalChemistryGroupParser extends AnalyticalChemistryGroupParser
 
-trait MassSpectralDataGroupParsers extends FieldParsers {
+trait MassSpectralDataGroupParser extends FieldParsers {
   def massSpectralDataGroup =
     subtagField("MS$FOCUSED_ION").* ~
       subtagField("MS$DATA_PROCESSING").* ^^ {
         case focusedIon ~ dataProcessing => MassSpectralDataGroup(focusedIon.toMap, dataProcessing.toMap)
       }
 }
+object MassSpectralDataGroupParser extends MassSpectralDataGroupParser
 
-trait MassSpectralPeakDataGroupParsers extends FieldParsers {
+trait MassSpectralPeakDataGroupParser extends FieldParsers {
   def massSpectralPeakDataGroup =
     stringField("PK$SPLASH").? ~
       stringField("PK$ANNOTATION").? ~
@@ -73,3 +76,4 @@ trait MassSpectralPeakDataGroupParsers extends FieldParsers {
         case splash ~ annotation ~ numPeak ~ peaks => MassSpectralPeakDataGroup(splash, annotation, numPeak, peaks)
       }
 }
+object MassSpectralPeakDataGroupParser extends MassSpectralPeakDataGroupParser
