@@ -1,4 +1,4 @@
-**massbank-record-parser** is a parser combinator library for the [MassBank](http://www.massbank.jp) Record Format. The library is written in Scala, has APIs for Scala and Java.
+**massbank-record-reader** is a parser combinator library for the [MassBank](http://www.massbank.jp) Record Format. The library is written in Scala, has APIs for Scala and Java.
 
 This covers the specification version **2.10** released on *March 1, 2016*.
 
