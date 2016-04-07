@@ -8,64 +8,49 @@ import scala.util.Try
 
 class LiteralParsersTest extends WordSpec with GeneratorDrivenPropertyChecks with Matchers with LiteralParsers {
 
-  def checkUnequalString[T](s: String, result: T) =
-    if (result.toString === s) {
-      fail(s"Parsing of an illegal value was successful: expected length $length, got ${result.toString.length} for input $result")
-    }
-
   "`anyString` literal parser" must {
     "parse any non-empty string" in {
-      forAll(Generators.validString) { s => parse(anyString, s) shouldBe a[Success[_]] }
-      forAll(Generators.validInt) { i => parse(integer, i.toString) shouldBe a[Success[_]] }
-      forAll(Generators.validDouble) { d => parse(double, d.toString) shouldBe a[Success[_]] }
+      forAll(Generators.validString) { s => parseAll(anyString, s) shouldBe a[Success[_]] }
+      forAll(Generators.validInt) { i => parseAll(integer, i.toString) shouldBe a[Success[_]] }
+      forAll(Generators.validDouble) { d => parseAll(double, d.toString) shouldBe a[Success[_]] }
     }
 
-    "reject non-empty strings" in { parse(anyString, "") shouldBe a[Failure] }
+    "reject non-empty strings" in { parseAll(anyString, "") shouldBe a[Failure] }
   }
 
   "`integer` literal parser" must {
     "parse valid integers" in {
-      forAll(Generators.validInt) { i => parse(integer, i.toString) shouldBe a[Success[_]] }
+      forAll(Generators.validInt) { i => parseAll(integer, i.toString) shouldBe a[Success[_]] }
     }
 
     "reject strings and doubles" in {
       val invalidInt = Generators.validString suchThat (s => Try(s.toInt).isFailure)
-      forAll(invalidInt) { s: String =>
-        parse(integer, s) map { result => checkUnequalString(s, result) }
-      }
-      forAll(Generators.validDouble) { d =>
-        val s = d.toString
-        parse(integer, s) map { result => checkUnequalString(s, result) }
-      }
+      forAll(invalidInt) { s: String => parseAll(integer, s) shouldBe a[Failure] }
+      forAll(Generators.validDouble) { d => parseAll(integer, d.toString) shouldBe a[Failure] }
     }
   }
 
   "`double` literal parser" must {
     "parse valid doubles" in {
-      forAll(Generators.validDouble) { d => parse(double, d.toString) shouldBe a[Success[_]] }
+      forAll(Generators.validDouble) { d => parseAll(double, d.toString) shouldBe a[Success[_]] }
+      forAll(Generators.validInt) { i => parseAll(double, i.toString) shouldBe a[Success[_]] }
     }
 
-    "reject strings and integers" in {
+    "reject strings" in {
       val invalidDouble = Generators.validString.suchThat(s => Try(s.toDouble).isFailure)
-      forAll(invalidDouble) { s =>
-        parse(double, s) map { result => checkUnequalString(s, result) }
-      }
-      forAll(Generators.validInt) { i =>
-        val s = i.toString
-        parse(double, s) map { result => checkUnequalString(s, result) }
-      }
+      forAll(invalidDouble) { s => parseAll(double, s) shouldBe a[Failure] }
     }
   }
 
   "`date` literal parser" must {
     "parse valid dates" in {
-      forAll(Generators.validDate) { s => parse(date, s) shouldBe a[Success[_]] }
+      forAll(Generators.validDate) { s => parseAll(date, s) shouldBe a[Success[_]] }
     }
   }
 
   "`subtag` literal parser" should {
     "parse valid string pairs" in {
-      forAll(Generators.validTag) { s => parse(subtag, s) shouldBe a[Success[_]] }
+      forAll(Generators.validTag) { s => parseAll(subtag, s) shouldBe a[Success[_]] }
     }
   }
 
@@ -73,21 +58,21 @@ class LiteralParsersTest extends WordSpec with GeneratorDrivenPropertyChecks wit
     "parse and correctly identify peaks based on its format string" in {
       val complete = "m/z int. rel.int."
       forAll(Generators.completePeak) { s =>
-        val result = parse(peak(complete), s)
+        val result = parseAll(peak(complete), s)
         result shouldBe a[Success[_]]
         result.get shouldBe a[CompletePeakTriple]
       }
 
       val absolute = "m/z int."
       forAll(Generators.partialPeak) { s =>
-        val result = parse(peak(absolute), s)
+        val result = parseAll(peak(absolute), s)
         result shouldBe a[Success[_]]
         result.get shouldBe an[AbsolutePeakPair]
       }
 
       val relative = "m/z rel.int."
       forAll(Generators.partialPeak) { s =>
-        val result = parse(peak(relative), s)
+        val result = parseAll(peak(relative), s)
         result shouldBe a[Success[_]]
         result.get shouldBe a[RelativePeakPair]
       }
