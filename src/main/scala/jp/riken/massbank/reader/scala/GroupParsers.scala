@@ -71,9 +71,12 @@ trait MassSpectralPeakDataGroupParser extends FieldParsers {
   def massSpectralPeakDataGroup =
     stringField("PK$SPLASH").? ~
       stringField("PK$ANNOTATION").? ~
-      intField("PK$NUM_PEAK") ~
+      numPeakField("PK$NUM_PEAK") ~
       peakField("PK$PEAK") ^^ {
-        case splash ~ annotation ~ numPeak ~ peaks => MassSpectralPeakDataGroup(splash, annotation, numPeak, peaks)
+        case splash ~ annotation ~ numPeak ~ peaks =>
+          numPeak.map(num => MassSpectralPeakDataGroup(splash, annotation, num, peaks))
+            .getOrElse(MassSpectralPeakDataGroup(splash, annotation, 0, PeakData(List.empty)))
       }
+
 }
 object MassSpectralPeakDataGroupParser extends MassSpectralPeakDataGroupParser
