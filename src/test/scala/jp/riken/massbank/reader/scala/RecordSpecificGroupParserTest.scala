@@ -60,7 +60,6 @@ class RecordSpecificGroupParserTest extends WordSpec with Matchers with RecordSp
       )
 
       val result = parse(recordSpecificGroup, input)
-      println(result)
       result shouldBe a[Success[_]]
       result.get shouldBe expected
     }
