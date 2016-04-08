@@ -19,7 +19,7 @@ object Generators {
     month <- Gen.chooseNum(1, 12)
     day <- {
       if (month == 2) Gen.chooseNum(1, 28)
-      else if (List(4, 6, 9, 11).contains((month))) Gen.chooseNum(1, 30)
+      else if (List(4, 6, 9, 11).contains(month)) Gen.chooseNum(1, 30)
       else Gen.chooseNum(1, 31)
     }
   } yield s"$year.$month.$day"
@@ -36,8 +36,4 @@ object Generators {
     relInt <- Gen.posNum[Double]
   } yield s"$mz $int $relInt"
 
-  val partialPeak = for {
-    mz <- Gen.posNum[Double]
-    int <- Gen.posNum[Double]
-  } yield s"$mz $int"
 }

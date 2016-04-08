@@ -1,9 +1,6 @@
 package jp.riken.massbank.reader.scala
 
 import java.time.LocalDate
-
-import jp.riken.massbank.reader.scala.types._
-
 import scala.util.Try
 
 trait FieldParsers extends LiteralParsers {
@@ -20,13 +17,6 @@ trait FieldParsers extends LiteralParsers {
   def dateField: String => Parser[LocalDate] = field(date) _
 
   def subtagField: String => Parser[(String, String)] = field(subtag) _
-
-  def peakField(name: String): Parser[PeakData] = name ~> ":" ~> anyString ~ anyString.* ^^ {
-    case format ~ lines =>
-      val peakParser = peak(format)
-      val peaks: List[Peak] = lines.map(l => parse(peakParser, l)).filter(_.successful).map(_.get)
-      PeakData(peaks)
-  }
 
   /** Special field for PK$NUM_PEAK to handle non-integral (e.g. N/A) values */
   def numPeakField(name: String): Parser[Option[Int]] = name ~> ":" ~> anyString ^^ {
@@ -46,7 +36,7 @@ trait FieldParsers extends LiteralParsers {
   implicit class FieldMapExtensions(fields: Map[String, List[String]]) extends FieldParsers {
     def getValue(key: String): Option[String] = fields.get(key).flatMap(_.headOption)
 
-    def getIterative(key: String): List[String] = fields.get(key).getOrElse(List.empty)
+    def getIterative(key: String): List[String] = fields.getOrElse(key, List.empty)
 
     def getSubtags(key: String): Map[String, String] = {
       val subtags = fields.getOrElse(key, List.empty)

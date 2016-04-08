@@ -55,26 +55,11 @@ class LiteralParsersTest extends WordSpec with GeneratorDrivenPropertyChecks wit
   }
 
   "`peak` literal parser" should {
-    "parse and correctly identify peaks based on its format string" in {
+    "parse and correctly identify peaks" in {
       val complete = "m/z int. rel.int."
       forAll(Generators.completePeak) { s =>
-        val result = parseAll(peak(complete), s)
+        val result = parseAll(peakTriple, s)
         result shouldBe a[Success[_]]
-        result.get shouldBe a[CompletePeakTriple]
-      }
-
-      val absolute = "m/z int."
-      forAll(Generators.partialPeak) { s =>
-        val result = parseAll(peak(absolute), s)
-        result shouldBe a[Success[_]]
-        result.get shouldBe an[AbsolutePeakPair]
-      }
-
-      val relative = "m/z rel.int."
-      forAll(Generators.partialPeak) { s =>
-        val result = parseAll(peak(relative), s)
-        result shouldBe a[Success[_]]
-        result.get shouldBe a[RelativePeakPair]
       }
     }
   }
