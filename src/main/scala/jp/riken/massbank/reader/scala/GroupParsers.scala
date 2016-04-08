@@ -3,34 +3,42 @@ package jp.riken.massbank.reader.scala
 import jp.riken.massbank.reader.scala.groups._
 import jp.riken.massbank.reader.scala.types._
 
+import scala.util.Try
+
 trait RecordSpecificGroupParser extends FieldParsers {
   def recordSpecificGroup =
-    stringField("ACCESSION").? ~
-      stringField("RECORD_TITLE").? ~
-      stringField("DATE").? ~
-      stringField("AUTHORS").? ~
-      stringField("LICENSE").? ~
-      stringField("COPYRIGHT").? ~
-      stringField("PUBLICATION").? ~
-      stringField("COMMENT").* ^^ {
-        case accession ~ recordTitle ~ date ~ authors ~ license ~ copyright ~ publication ~ comment =>
-          RecordSpecificGroup(accession.map(_.asInstanceOf[Accession]), recordTitle, date, authors, license, copyright, publication, comment)
-      }
+    fieldsStartingWith("") ^^ {
+      case fields =>
+        RecordSpecificGroup(
+          fields.getValue("ACCESSION").map(_.asInstanceOf[Accession]),
+          fields.getValue("RECORD_TITLE"),
+          fields.getValue("DATE"),
+          fields.getValue("AUTHORS"),
+          fields.getValue("LICENSE"),
+          fields.getValue("COPYRIGHT"),
+          fields.getValue("PUBLICATION"),
+          fields.getIterative("COMMENT"),
+          fields -- List("ACCESSION", "RECORD_TITLE", "DATE", "AUTHORS", "LICENSE", "COPYRIGHT", "PUBLICATION", "COMMENT")
+        )
+    }
 }
 object RecordSpecificGroupParser extends RecordSpecificGroupParser
 
 trait ChemicalGroupParser extends FieldParsers {
   def chemicalGroup =
-    stringField("CH$NAME").* ~
-      stringField("CH$COMPOUND_CLASS").? ~
-      stringField("CH$FORMULA").? ~
-      stringField("CH$EXACT_MASS").? ~
-      stringField("CH$SMILES").? ~
-      stringField("CH$IUPAC").? ~
-      subtagField("CH$LINK").* ^^ {
-        case name ~ compoundClass ~ formula ~ exactMass ~ smiles ~ iupac ~ links =>
-          ChemicalGroup(name, compoundClass, formula, exactMass, smiles, iupac, links.toMap)
-      }
+    fieldsStartingWith("CH$") ^^ {
+      case fields =>
+        ChemicalGroup(
+          fields.getIterative("CH$NAME"),
+          fields.getValue("CH$COMPOUND_CLASS"),
+          fields.getValue("CH$FORMULA"),
+          fields.getValue("CH$EXACT_MASS"),
+          fields.getValue("CH$SMILES"),
+          fields.getValue("CH$IUPAC"),
+          fields.getSubtags("CH$LINK"),
+          fields -- List("CH$NAME", "CH$COMPOUND_CLASS", "CH$FORMULA", "CH$EXACT_MASS", "CH$SMILES", "CH$IUPAC", "CH$LINK")
+        )
+    }
 }
 object ChemicalGroupParser extends ChemicalGroupParser
 
@@ -51,35 +59,47 @@ object SampleGroupParser extends ChemicalGroupParser
 
 trait AnalyticalChemistryGroupParser extends FieldParsers {
   def analyticalChemistryGroup =
-    stringField("AC$INSTRUMENT").? ~
-      stringField("AC$INSTRUMENT_TYPE").? ~
-      subtagField("AC$MASS_SPECTROMETRY").* ~
-      subtagField("AC$CHROMATOGRAPHY").* ^^ {
-        case instrument ~ instrumentType ~ massSpectrometry ~ chromatography =>
-          AnalyticalChemistryGroup(instrument, instrumentType, massSpectrometry.toMap, chromatography.toMap)
-      }
+    fieldsStartingWith("AC$") ^^ {
+      case fields =>
+        AnalyticalChemistryGroup(
+          fields.getValue("AC$INSTRUMENT"),
+          fields.getValue("AC$INSTRUMENT_TYPE"),
+          fields.getSubtags("AC$MASS_SPECTROMETRY"),
+          fields.getSubtags("AC$CHROMATOGRAPHY"),
+          fields -- List("AC$INSTRUMENT", "AC$INSTRUMENT_TYPE", "AC$MASS_SPECTROMETRY", "AC$CHROMATOGRAPHY")
+        )
+    }
 }
 object AnalyticalChemistryGroupParser extends AnalyticalChemistryGroupParser
 
 trait MassSpectralDataGroupParser extends FieldParsers {
   def massSpectralDataGroup =
-    subtagField("MS$FOCUSED_ION").* ~
-      subtagField("MS$DATA_PROCESSING").* ^^ {
-        case focusedIon ~ dataProcessing => MassSpectralDataGroup(focusedIon.toMap, dataProcessing.toMap)
-      }
+    fieldsStartingWith("MS$") ^^ {
+      case fields =>
+        MassSpectralDataGroup(
+          fields.getSubtags("MS$FOCUSED_ION"),
+          fields.getSubtags("MS$DATA_PROCESSING"),
+          fields -- List("MS$FOCUSED_ION", "MS$DATA_PROCESSING")
+        )
+    }
 }
 object MassSpectralDataGroupParser extends MassSpectralDataGroupParser
 
 trait MassSpectralPeakDataGroupParser extends FieldParsers {
   def massSpectralPeakDataGroup =
-    stringField("PK$SPLASH").? ~
-      stringField("PK$ANNOTATION").? ~
-      numPeakField("PK$NUM_PEAK") ~
-      peakField("PK$PEAK") ^^ {
-        case splash ~ annotation ~ numPeak ~ peaks =>
-          numPeak.map(num => MassSpectralPeakDataGroup(splash, annotation, num, peaks))
-            .getOrElse(MassSpectralPeakDataGroup(splash, annotation, 0, PeakData(List.empty)))
-      }
+    fieldsStartingWith("PK$") ~ peakTriple.+ ^^ {
+      case fields ~ peaks =>
+        println(fields.mkString("\n"))
+        val numPeak = fields.getValue("PK$NUM_PEAK").flatMap(s => Try(s.toInt).toOption)
+        val others = fields -- List("PK$SPLASH", "PK$ANNOTATION")
 
+        MassSpectralPeakDataGroup(
+          fields.getValue("PK$SPLASH"),
+          fields.getValue("PK$ANNOTATION"),
+          numPeak.getOrElse(0),
+          PeakData(peaks),
+          others
+        )
+    }
 }
 object MassSpectralPeakDataGroupParser extends MassSpectralPeakDataGroupParser
