@@ -20,7 +20,9 @@ trait LiteralParsers extends JavaTokenParsers {
 
   def subtag: Parser[(String, String)] = """[\w][\w\d_-]*""".r ~ anyString ^^ { case subtag ~ value => (subtag, value) }
 
-  def peakTriple: Parser[PeakTriple] = double ~ double ~ double ^^ { case a ~ b ~ c => PeakTriple(a, b, c) }
+  def peakTriple: Parser[Option[PeakTriple]] =
+    (double ~ double ~ double ^^ { case a ~ b ~ c => Some(PeakTriple(a, b, c)) }) |
+      anyString ^^ { case _ => None }
 }
 
 object LiteralParsers extends LiteralParsers

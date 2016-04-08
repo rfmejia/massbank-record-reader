@@ -39,7 +39,7 @@ case class AnalyticalChemistryGroup(
     instrument: Option[String],
     instrumentType: Option[String],
     massSpectrometry: Map[String, String],
-    chromatography: Map[String, String],
+    chromatography: Map[String, List[String]],
     other: Map[String, List[String]] = Map.empty
 ) extends MassBankGroup {
   lazy val ionMode: Option[String] = massSpectrometry.get("ION_MODE")
@@ -54,7 +54,7 @@ case class MassSpectralDataGroup(
 
 case class MassSpectralPeakDataGroup(
   splash: Option[String],
-  annotation: Option[String],
+  annotation: List[String],
   numPeak: Int,
   peak: PeakData,
   other: Map[String, List[String]] = Map.empty

@@ -65,7 +65,7 @@ trait AnalyticalChemistryGroupParser extends FieldParsers {
           fields.getValue("AC$INSTRUMENT"),
           fields.getValue("AC$INSTRUMENT_TYPE"),
           fields.getSubtags("AC$MASS_SPECTROMETRY"),
-          fields.getSubtags("AC$CHROMATOGRAPHY"),
+          fields.getSubtagList("AC$CHROMATOGRAPHY"),
           fields -- List("AC$INSTRUMENT", "AC$INSTRUMENT_TYPE", "AC$MASS_SPECTROMETRY", "AC$CHROMATOGRAPHY")
         )
     }
@@ -87,19 +87,28 @@ object MassSpectralDataGroupParser extends MassSpectralDataGroupParser
 
 trait MassSpectralPeakDataGroupParser extends FieldParsers {
   def massSpectralPeakDataGroup =
-    fieldsStartingWith("PK$") ~ peakTriple.+ ^^ {
-      case fields ~ peaks =>
-        println(fields.mkString("\n"))
-        val numPeak = fields.getValue("PK$NUM_PEAK").flatMap(s => Try(s.toInt).toOption)
-        val others = fields -- List("PK$SPLASH", "PK$ANNOTATION")
+    fieldsStartingWith("PK$", s => !List("PK$ANNOTATION", "PK$NUM_PEAK").contains(s)) ~
+      lineWhere(s => s.startsWith("PK$ANNOTATION") || !s.startsWith("PK$")).* ~
+      fieldsStartingWith("PK$") ~
+      peakTriple.+ ^^ {
+        case pk1 ~ annotation ~ pk2 ~ peaks =>
+          val fields = pk1 ++ pk2
+          val numPeak = fields.getValue("PK$NUM_PEAK").flatMap(s => Try(s.toInt).toOption)
+          val others = fields -- List("PK$SPLASH")
+          val parsedPeaks = peaks.flatten
 
-        MassSpectralPeakDataGroup(
-          fields.getValue("PK$SPLASH"),
-          fields.getValue("PK$ANNOTATION"),
-          numPeak.getOrElse(0),
-          PeakData(peaks),
-          others
-        )
-    }
+          require(numPeak.getOrElse(0) == parsedPeaks.length)
+
+          // Remove tag
+          val as = annotation.map(s => s.replaceAll("""PK\$ANNOTATION:""", "").trim)
+
+          MassSpectralPeakDataGroup(
+            fields.getValue("PK$SPLASH"),
+            as,
+            numPeak.getOrElse(0),
+            PeakData(parsedPeaks),
+            others
+          )
+      }
 }
 object MassSpectralPeakDataGroupParser extends MassSpectralPeakDataGroupParser
