@@ -46,6 +46,8 @@ trait FieldParsers extends LiteralParsers {
   implicit class FieldMapExtensions(fields: Map[String, List[String]]) extends FieldParsers {
     def getValue(key: String): Option[String] = fields.get(key).flatMap(_.headOption)
 
+    def getIterative(key: String): List[String] = fields.get(key).getOrElse(List.empty)
+
     def getSubtags(key: String): Map[String, String] = {
       val subtags = fields.getOrElse(key, List.empty)
       val results = subtags.map(f => parse(subtag, f)).filter(_.successful).map(_.get)
