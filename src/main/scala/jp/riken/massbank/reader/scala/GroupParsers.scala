@@ -36,13 +36,16 @@ object ChemicalGroupParser extends ChemicalGroupParser
 
 trait SampleGroupParser extends FieldParsers {
   def sampleGroup =
-    stringField("SP$SCIENTIFIC_NAME").? ~
-      stringField("SP$LINEAGE").? ~
-      subtagField("SP$LINK").* ~
-      stringField("SP$SAMPLE").? ^^ {
-        case scientificName ~ lineage ~ links ~ sample =>
-          SampleGroup(scientificName, lineage, links.toMap, sample)
-      }
+    fieldsStartingWith("SP$") ^^ {
+      case fields =>
+        SampleGroup(
+          fields.getValue("SP$SCIENTIFIC_NAME"),
+          fields.getValue("SP$LINEAGE"),
+          fields.getSubtags("SP$LINK"),
+          fields.getValue("SP$SAMPLE"),
+          fields -- List("SP$SCIENTIFIC_NAME", "SP$LINEAGE", "SP$LINK", "SP$SAMPLE")
+        )
+    }
 }
 object SampleGroupParser extends ChemicalGroupParser
 

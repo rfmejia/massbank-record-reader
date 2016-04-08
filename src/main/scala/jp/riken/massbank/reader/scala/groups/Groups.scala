@@ -29,7 +29,8 @@ case class SampleGroup(
   scientificName: Option[String],
   lineage: Option[String],
   link: Map[String, String],
-  sample: Option[String]
+  sample: Option[String],
+  other: Map[String, List[String]]
 ) extends MassBankGroup
 
 case class AnalyticalChemistryGroup(

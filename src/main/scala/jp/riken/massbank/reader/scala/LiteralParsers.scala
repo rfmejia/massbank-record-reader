@@ -6,6 +6,8 @@ import scala.util.parsing.combinator.JavaTokenParsers
 
 /** Parsers for additional literals in MassBank */
 trait LiteralParsers extends JavaTokenParsers {
+  def tag: Parser[String] = """[\w-_\$]+""".r
+
   def anyString: Parser[String] = ".+".r ^^ (_.trim)
 
   def integer: Parser[Int] = wholeNumber ^^ (_.toInt)
