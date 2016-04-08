@@ -1,7 +1,7 @@
 package jp.riken.massbank.reader.scala
 
 import jp.riken.massbank.reader.scala.groups._
-import jp.riken.massbank.reader.scala.types.{ CompletePeakTriple, PeakData }
+import jp.riken.massbank.reader.scala.types.{ PeakTriple, PeakData }
 import org.scalatest._
 
 class MassSpectralPeakDataGroupParserTest extends WordSpec with Matchers with MassSpectralPeakDataGroupParser {
@@ -20,10 +20,14 @@ class MassSpectralPeakDataGroupParserTest extends WordSpec with Matchers with Ma
         Some("82.9455304521 118.065674262 119.0734992941 165.0664025435 170.0605888841 206.0372666262 229.0061193362 241.0061193362 257.9962829314 274.9990225856 286.9990225856 305.0095872719 323.0201519582"),
         3,
         PeakData(List(
-          CompletePeakTriple(646.3223, 64380108, 999),
-          CompletePeakTriple(647.3252, 26819201, 416),
-          CompletePeakTriple(648.3309, 7305831, 113)
-        ))
+          PeakTriple(646.3223, 64380108, 999),
+          PeakTriple(647.3252, 26819201, 416),
+          PeakTriple(648.3309, 7305831, 113)
+        )),
+        Map(
+          "PK$NUM_PEAK" -> List("3"),
+          "PK$PEAK" -> List("m/z int. rel.int.")
+        )
       )
 
       val result = parse(massSpectralPeakDataGroup, input)
@@ -33,14 +37,18 @@ class MassSpectralPeakDataGroupParserTest extends WordSpec with Matchers with Ma
 
     "accept empty peak values (e.g., when handling merged spectra, 'PK$NUM_PEAK' and 'PK$PEAK' are 'N/A')" in {
       val input = """PK$SPLASH: splash10-00ke60z100-113be5f50f91fd032b18
-                    |PK$NUM_PEAK: N/A
-                    |PK$PEAK: m/z int. rel.int.
-                    |  N/A""".stripMargin
+                        |PK$NUM_PEAK: N/A
+                        |PK$PEAK: m/z int. rel.int.
+                        |  N/A""".stripMargin
       val expected = MassSpectralPeakDataGroup(
         Some("splash10-00ke60z100-113be5f50f91fd032b18"),
         None,
         0,
-        PeakData(List.empty)
+        PeakData(List.empty),
+        Map(
+          "PK$NUM_PEAK" -> List("N/A"),
+          "PK$PEAK" -> List("m/z int. rel.int.")
+        )
       )
 
       val result = parse(massSpectralPeakDataGroup, input)
@@ -54,10 +62,10 @@ class MassSpectralPeakDataGroupParserTest extends WordSpec with Matchers with Ma
 
     "reject peaks when `NUM_PEAK` is different from number of parsed peaks" in {
       val input = """PK$NUM_PEAK: 2
-                    |PK$PEAK: m/z int. rel.int.
-                    |  646.3223 64380108 999
-                    |  647.3252 26819201 416
-                    |  648.3309 7305831 113""".stripMargin
+                        |PK$PEAK: m/z int. rel.int.
+                        |  646.3223 64380108 999
+                        |  647.3252 26819201 416
+                        |  648.3309 7305831 113""".stripMargin
 
       parse(massSpectralPeakDataGroup, input) shouldBe a[NoSuccess]
     }
