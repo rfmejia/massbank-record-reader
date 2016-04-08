@@ -12,7 +12,8 @@ case class RecordSpecificGroup(
   license: Option[String],
   copyright: Option[String],
   publication: Option[String],
-  comment: List[String]
+  comment: List[String],
+  other: Map[String, List[String]] = Map.empty
 ) extends MassBankGroup
 
 case class ChemicalGroup(
@@ -22,7 +23,8 @@ case class ChemicalGroup(
   exactMass: Option[String],
   smiles: Option[String],
   iupac: Option[String],
-  link: Map[String, String]
+  link: Map[String, String],
+  other: Map[String, List[String]] = Map.empty
 ) extends MassBankGroup
 
 case class SampleGroup(
@@ -30,14 +32,15 @@ case class SampleGroup(
   lineage: Option[String],
   link: Map[String, String],
   sample: Option[String],
-  other: Map[String, List[String]]
+  other: Map[String, List[String]] = Map.empty
 ) extends MassBankGroup
 
 case class AnalyticalChemistryGroup(
     instrument: Option[String],
     instrumentType: Option[String],
     massSpectrometry: Map[String, String],
-    chromatography: Map[String, String]
+    chromatography: Map[String, String],
+    other: Map[String, List[String]] = Map.empty
 ) extends MassBankGroup {
   lazy val ionMode: Option[String] = massSpectrometry.get("ION_MODE")
   lazy val msType: Option[String] = massSpectrometry.get("MS_TYPE")
@@ -45,13 +48,15 @@ case class AnalyticalChemistryGroup(
 
 case class MassSpectralDataGroup(
   focusedIon: Map[String, String],
-  dataProcessing: Map[String, String]
+  dataProcessing: Map[String, String],
+  other: Map[String, List[String]] = Map.empty
 ) extends MassBankGroup
 
 case class MassSpectralPeakDataGroup(
   splash: Option[String],
   annotation: Option[String],
   numPeak: Int,
-  peak: PeakData
+  peak: PeakData,
+  other: Map[String, List[String]] = Map.empty
 ) extends MassBankGroup
 
