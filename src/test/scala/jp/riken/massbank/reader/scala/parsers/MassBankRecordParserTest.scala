@@ -16,8 +16,7 @@ class MassBankRecordParserTest extends WordSpec with Matchers with MassBankRecor
       def parseFiles(filename: String): Either[String, MassBankRecord] = {
         val source = Source.fromURL(getClass.getResource("/testdata/" + filename))
         source should not be null
-        val lines = source.getLines.mkString("\n")
-        MassBankRecordReader.read(lines)
+        MassBankRecordReader.read(source)
       }
 
       val filenames = sources.getLines
