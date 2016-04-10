@@ -6,7 +6,7 @@ object ProjectBuild extends Build {
   override def settings = super.settings ++ Seq(
     name := "massbank-record-reader",
     organization := "jp.riken",
-    version := "2.10-1-SNAPSHOT",
+    version := "2.10-1",
     scalaVersion in ThisBuild := "2.11.8",
     scalacOptions ++= Seq(
       "-Xlint",
