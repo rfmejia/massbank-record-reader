@@ -1,7 +1,7 @@
-package jp.riken.massbank.reader.scala
+package jp.riken.massbank.reader.scala.parsers
 
 import jp.riken.massbank.reader.scala.groups._
-import jp.riken.massbank.reader.scala.types.{ PeakTriple, PeakData }
+import jp.riken.massbank.reader.scala.types.{ PeakData, PeakTriple }
 import org.scalatest._
 
 class MassSpectralPeakDataGroupParserTest extends WordSpec with Matchers with Inside with MassSpectralPeakDataGroupParser {

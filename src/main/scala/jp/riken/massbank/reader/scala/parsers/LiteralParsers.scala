@@ -1,7 +1,9 @@
-package jp.riken.massbank.reader.scala
+package jp.riken.massbank.reader.scala.parsers
 
 import java.time.LocalDate
+
 import jp.riken.massbank.reader.scala.types._
+
 import scala.util.parsing.combinator.JavaTokenParsers
 
 /** Parsers for additional literals in MassBank */

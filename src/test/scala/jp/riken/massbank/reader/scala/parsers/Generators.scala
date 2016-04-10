@@ -1,6 +1,6 @@
-package jp.riken.massbank.reader.scala
+package jp.riken.massbank.reader.scala.parsers
 
-import org.scalacheck.{ Gen, Shrink }
+import org.scalacheck.Gen
 
 object Generators {
 

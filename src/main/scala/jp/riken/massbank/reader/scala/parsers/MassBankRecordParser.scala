@@ -1,8 +1,9 @@
-package jp.riken.massbank.reader.scala
+package jp.riken.massbank.reader.scala.parsers
 
 import jp.riken.massbank.reader.scala.types._
+import jp.riken.massbank.reader.scala.{ _ }
+
 import scala.util.parsing.combinator.JavaTokenParsers
-import scala.util.{ Either, Left, Right }
 
 /** Base ADT types and overall parsing structure for the MassBank record format. */
 trait MassBankRecordParser extends JavaTokenParsers
@@ -29,8 +30,5 @@ trait MassBankRecordParser extends JavaTokenParsers
 }
 
 object MassBankRecordParser extends MassBankRecordParser {
-  def read(input: String): Either[String, MassBankRecord] = parseAll(massBankRecord, input) match {
-    case Success(record, _)      => Right(record)
-    case NoSuccess(error, input) => Left(error + " " + input.toString)
-  }
+
 }

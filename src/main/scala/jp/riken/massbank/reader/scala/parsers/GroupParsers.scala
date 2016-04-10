@@ -1,4 +1,4 @@
-package jp.riken.massbank.reader.scala
+package jp.riken.massbank.reader.scala.parsers
 
 import jp.riken.massbank.reader.scala.groups._
 import jp.riken.massbank.reader.scala.types._

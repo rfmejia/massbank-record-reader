@@ -1,6 +1,7 @@
-package jp.riken.massbank.reader.scala
+package jp.riken.massbank.reader.scala.parsers
 
 import java.time.LocalDate
+
 import scala.util.Try
 
 trait FieldParsers extends LiteralParsers {

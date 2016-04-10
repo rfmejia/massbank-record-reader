@@ -1,9 +1,10 @@
-package jp.riken.massbank.reader.scala
+package jp.riken.massbank.reader.scala.parsers
 
+import jp.riken.massbank.reader.scala.MassBankRecordReader
 import jp.riken.massbank.reader.scala.types.MassBankRecord
+import org.scalatest._
 
 import scala.io.Source
-import org.scalatest._
 
 class MassBankRecordParserTest extends WordSpec with Matchers with MassBankRecordParser {
   "An `MassBankRecordGroupParser`" should {
@@ -16,7 +17,7 @@ class MassBankRecordParserTest extends WordSpec with Matchers with MassBankRecor
         val source = Source.fromURL(getClass.getResource("/testdata/" + filename))
         source should not be null
         val lines = source.getLines.mkString("\n")
-        MassBankRecordParser.read(lines)
+        MassBankRecordReader.read(lines)
       }
 
       val filenames = sources.getLines

@@ -1,6 +1,5 @@
-package jp.riken.massbank.reader.scala
+package jp.riken.massbank.reader.scala.parsers
 
-import jp.riken.massbank.reader.scala.types._
 import org.scalatest._
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
 
