@@ -7,7 +7,7 @@ import scala.util.Try
 
 trait RecordSpecificGroupParser extends FieldParsers {
   def recordSpecificGroup =
-    fieldsStartingWith("") ^^ {
+    fieldsStartingWith("", tag => !tag.contains("$")) ^^ {
       case fields =>
         RecordSpecificGroup(
           fields.getValue("ACCESSION").map(_.asInstanceOf[Accession]),
@@ -55,7 +55,7 @@ trait SampleGroupParser extends FieldParsers {
         )
     }
 }
-object SampleGroupParser extends ChemicalGroupParser
+object SampleGroupParser extends SampleGroupParser
 
 trait AnalyticalChemistryGroupParser extends FieldParsers {
   def analyticalChemistryGroup =
@@ -87,10 +87,10 @@ object MassSpectralDataGroupParser extends MassSpectralDataGroupParser
 
 trait MassSpectralPeakDataGroupParser extends FieldParsers {
   def massSpectralPeakDataGroup =
-    fieldsStartingWith("PK$", s => !List("PK$ANNOTATION", "PK$NUM_PEAK").contains(s)) ~
-      lineWhere(s => s.startsWith("PK$ANNOTATION") || !s.startsWith("PK$")).* ~
+    fieldsStartingWith("PK$", tag => !List("PK$ANNOTATION", "PK$NUM_PEAK").contains(tag)) ~
+      lineWhere(tag => tag.startsWith("PK$ANNOTATION") || !tag.startsWith("PK$")).* ~
       fieldsStartingWith("PK$") ~
-      peakTriple.+ ^^ {
+      peakTriple.* ^^ {
         case pk1 ~ annotation ~ pk2 ~ peaks =>
           val fields = pk1 ++ pk2
           val numPeak = fields.getValue("PK$NUM_PEAK").flatMap(s => Try(s.toInt).toOption)
