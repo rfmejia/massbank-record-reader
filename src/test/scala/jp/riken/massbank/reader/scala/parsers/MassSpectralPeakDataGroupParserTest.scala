@@ -42,7 +42,7 @@ class MassSpectralPeakDataGroupParserTest extends WordSpec with Matchers with In
                             |  N/A""".stripMargin
       val expected = MassSpectralPeakDataGroup(
         Some("splash10-00ke60z100-113be5f50f91fd032b18"),
-        List(), 0, PeakData(List.empty),
+        List(), 0, PeakData.empty,
         Map(
           "PK$NUM_PEAK" -> List("N/A"),
           "PK$PEAK" -> List("m/z int. rel.int.")
