@@ -13,8 +13,10 @@ Download a release JAR and add the library in your project classpath. Then, use 
 ```scala
 import jp.riken.massbank.reader.scala.MassBankRecordReader
 import jp.riken.massbank.reader.scala.types.MassBankRecord
+import scala.util.{Success, Failure}
+import scala.io.Source
 
-val lines: String = // MassBank record as a string
+val lines: Source = // MassBank record as a scala.io.Source or as a java.lang.String
 val result = MassBankRecordReader.read(lines)
 result match {
   case Success(record) => // Parsing successful
