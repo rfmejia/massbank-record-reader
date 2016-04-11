@@ -15,10 +15,10 @@ import jp.riken.massbank.reader.scala.MassBankRecordReader
 import jp.riken.massbank.reader.scala.types.MassBankRecord
 
 val lines: String = // MassBank record as a string
-val result: Either[String, MassBankRecord] = MassBankRecordReader.read(lines)
+val result = MassBankRecordReader.read(lines)
 result match {
-  case Right(record) => // Parsing successful
-  case Left(errMsg)  => // Encountered an error, summarized in errMsg
+  case Success(record) => // Parsing successful
+  case Failure(err)  => // Encountered an error, summarized in exception
 }
 ```
 
