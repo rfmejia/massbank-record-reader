@@ -24,4 +24,4 @@ result match {
 }
 ```
 
-When parsing is successful, a `MassBankRecord` parse tree is produced. The parse tree is a set of named properties as defined in the 2.10 specifications. Currently, only 'PK$NUM_PEAK' and 'PK$PEAK' have special types; other types are all parsed as a String, and are stored as an Option[String]. List[String], or Map[String, String].
+When parsing is successful, a `MassBankRecord` parse tree is produced. The parse tree is a set of named properties as defined in the 2.10 specifications. Currently, only 'PK$NUM_PEAK' and 'PK$PEAK' have special types; other types are all parsed as a `String`, and are stored as an `Option[String]`. `List[String]`, or `Map[String, String]`.

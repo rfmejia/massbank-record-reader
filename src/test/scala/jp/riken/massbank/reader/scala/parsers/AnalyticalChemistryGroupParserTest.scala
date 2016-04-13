@@ -31,6 +31,8 @@ class AnalyticalChemistryGroupParserTest extends WordSpec with Matchers with Ana
       val result = parse(analyticalChemistryGroup, input)
       result shouldBe a[Success[_]]
       result.get shouldBe expected
+      result.get.ionMode shouldBe Some("POSITIVE")
+      result.get.msType shouldBe Some("MS")
     }
 
     "accept iterative lines on the 'SOLVENT' field as a map" in {
