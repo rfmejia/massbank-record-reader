@@ -5,7 +5,7 @@ import jp.riken.massbank.reader.scala.types._
 sealed trait MassBankGroup
 
 case class RecordSpecificGroup(
-  accession: Option[Accession],
+  accession: Option[String],
   recordTitle: Option[String],
   date: Option[String],
   authors: Option[String],

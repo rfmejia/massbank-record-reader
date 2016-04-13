@@ -18,7 +18,7 @@ class RecordSpecificGroupParserTest extends WordSpec with Matchers with RecordSp
                     |""".stripMargin
 
       val expected = RecordSpecificGroup(
-        Some("PR100283".asInstanceOf[Accession]),
+        Some("PR100283"),
         Some("(R)-3-Amino-4-phenylbutyric acid; LC-ESI-QTOF; MS2; CE:Ramp 5-60 V; [M+H]+"),
         Some("2016.01.19 (Created 2009.09.10, modified 2012.10.22)"),
         Some("Matsuda F, Suzuki M, Sawada Y, Plant Science Center, RIKEN."),
@@ -45,7 +45,7 @@ class RecordSpecificGroupParserTest extends WordSpec with Matchers with RecordSp
                     |COMMENT: [Merging] KO006653 2-Amino-3-phosphonopropionate; LC-ESI-QTOF; MS2; CE:50 V [M+H]+""".stripMargin
 
       val expected = RecordSpecificGroup(
-        Some("KOX00075".asInstanceOf[Accession]),
+        Some("KOX00075"),
         None, None, None, None, None, None,
         List(
           "Peak data in the following records are not open to the public as requested by their authors.",

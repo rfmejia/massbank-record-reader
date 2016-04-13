@@ -10,7 +10,7 @@ trait RecordSpecificGroupParser extends FieldParsers {
     fieldsStartingWith("", tag => !tag.contains("$")) ^^ {
       case fields =>
         RecordSpecificGroup(
-          fields.getValue(`ACCESSION`).map(_.asInstanceOf[Accession]),
+          fields.getValue(`ACCESSION`),
           fields.getValue(`RECORD_TITLE`),
           fields.getValue(`DATE`),
           fields.getValue(`AUTHORS`),
