@@ -26,7 +26,7 @@ object Generators {
 
   val validTag = for {
     start <- Gen.alphaChar
-    subtag <- Gen.listOfN(length, Gen.oneOf(Gen.alphaNumChar, Gen.oneOf("-_")))
+    subtag <- Gen.listOfN(length, Gen.oneOf(Gen.alphaNumChar, Gen.oneOf("-_/")))
     value <- validString
   } yield start + subtag.mkString + " " + value
 

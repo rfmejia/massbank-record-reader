@@ -49,7 +49,11 @@ class LiteralParsersTest extends WordSpec with GeneratorDrivenPropertyChecks wit
 
   "`subtag` literal parser" should {
     "parse valid string pairs" in {
-      forAll(Generators.validTag) { s => parseAll(subtag, s) shouldBe a[Success[_]] }
+      forAll(Generators.validTag) { s =>
+        val result = parseAll(subtag, s)
+        result shouldBe a[Success[_]]
+        result.get._1 shouldBe s.split(" ")(0)
+      }
     }
   }
 

@@ -20,7 +20,7 @@ trait LiteralParsers extends JavaTokenParsers {
     case year ~ "." ~ month ~ "." ~ day => LocalDate.of(year.toInt, month.toInt, day.toInt)
   }
 
-  def subtag: Parser[(String, String)] = """[\w][\w\d_-]*""".r ~ anyString ^^ { case subtag ~ value => (subtag, value) }
+  def subtag: Parser[(String, String)] = """[\w][\w\d/_-]*""".r ~ anyString ^^ { case subtag ~ value => (subtag, value) }
 
   def peakTriple: Parser[Option[PeakTriple]] =
     (double ~ double ~ double ^^ { case a ~ b ~ c => Some(PeakTriple(a, b, c)) }) |
