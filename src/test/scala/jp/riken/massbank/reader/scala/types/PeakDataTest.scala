@@ -60,4 +60,8 @@ class PeakDataTest extends WordSpec with Matchers {
         PeakTriple(648.3309, 113, 113)
       )
   }
+
+  "be able to hold empty peaks" in {
+    PeakData.empty.peaks shouldBe List.empty
+  }
 }
